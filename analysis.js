@@ -112,21 +112,29 @@ function complexity(filePath)
 	fileBuilder.ImportCount = 0;
 	builders[filePath] = fileBuilder;
 
-	// Tranverse program with a function visitor.
+	// Traverse program with a function visitor.
 	traverseWithParents(ast, function (node) 
 	{
 		if (node.type == "Literal")
+			// 2b : String Usage
 			fileBuilder.Strings++;
 
 		if (node.type === 'FunctionDeclaration') 
 		{
 			var builder = new FunctionBuilder();
 
-			builder.FunctionName = functionName(node);
-			builder.ParameterCount = node.params.length;
 			builder.StartLine    = node.loc.start.line;
-			traverseWithParents(node, function() {
+			builder.FunctionName = functionName(node);
 
+			// 2a : ParameterCount
+			builder.ParameterCount = node.params.length;
+
+			// 3a : SimpleCyclomaticComplexity
+			builder.SimpleCyclomaticComplexity = 1;
+			traverseWithParents(node, function (innerNode) {
+				if (isDecision(innerNode)) {
+					builder.SimpleCyclomaticComplexity += 1;
+				}
 			});
 
 			builders[builder.FunctionName] = builder;
@@ -261,7 +269,7 @@ remainder.toString() + " seconds";
 				      && n != 'A' && n != 'B' && n != 'C' && n != 'D'
 				      && n != 'E' && n != 'F' && n != 'G' && n != 'H'
 				      && n != 'I' && n != 'J' && n != 'K' && n != 'L'
-				      && n != 'M' && n != 'N' &&  n != 'O' && n != 'P'
+				      && n != 'M' && n != 'N' && n != 'O' && n != 'P'
 				      && n != 'Q' && n != 'R' && n != 'S' && n != 'T'
 				      && n != 'U' && n != 'V' && n != 'W' && n != 'X'
 				      && n != 'Y' && n != 'Z'
