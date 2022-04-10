@@ -134,6 +134,20 @@ function complexity(filePath)
 			traverseWithParents(node, function (innerNode) {
 				if (isDecision(innerNode)) {
 					builder.SimpleCyclomaticComplexity += 1;
+					
+				}
+
+				// 3b : MaxConditions
+				if (innerNode.type === "IfStatement") {
+					var tempMaxCon = 1;
+					traverseWithParents(innerNode, function (moreInnerNode) {
+						if (moreInnerNode.operator === "&&" || moreInnerNode.operator === "||") {
+							tempMaxCon += 1;
+						}
+					});
+					if (tempMaxCon > builder.MaxConditions) {
+						builder.MaxConditions = tempMaxCon;
+					}
 				}
 			});
 
