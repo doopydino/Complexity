@@ -134,22 +134,25 @@ function complexity(filePath)
 			traverseWithParents(node, function (innerNode) {
 				if (isDecision(innerNode)) {
 					builder.SimpleCyclomaticComplexity += 1;
-					
 				}
 
 				// 3b : MaxConditions
 				if (innerNode.type === "IfStatement") {
-					var tempMaxCon = 1;
+					var tempMaxCon = 0;
 					traverseWithParents(innerNode, function (moreInnerNode) {
 						if (moreInnerNode.operator === "&&" || moreInnerNode.operator === "||") {
 							tempMaxCon += 1;
+						} else if (moreInnerNode.type === "IfStatement") {
+							tempMaxCon = 0;
+						}
+						if (tempMaxCon >= builder.MaxConditions) {
+							builder.MaxConditions = tempMaxCon + 1;
 						}
 					});
-					if (tempMaxCon > builder.MaxConditions) {
-						builder.MaxConditions = tempMaxCon;
-					}
 				}
 			});
+
+			// 5a : MaxNestingDepth
 
 			builders[builder.FunctionName] = builder;
 		}
