@@ -113,15 +113,14 @@ function complexity(filePath)
 	builders[filePath] = fileBuilder;
 
 	// Traverse program with a function visitor.
-	traverseWithParents(ast, function (node) 
-	{
-		if (node.type == "Literal")
+	traverseWithParents(ast, function (node){
+		if (node.type === 'Literal') {
 			// 2b : String Usage
 			fileBuilder.Strings++;
+		}
 
-		if (node.type === 'FunctionDeclaration') 
-		{
-			var builder = new FunctionBuilder();
+		if (node.type === 'FunctionDeclaration'){
+			let builder = new FunctionBuilder();
 
 			builder.StartLine    = node.loc.start.line;
 			builder.FunctionName = functionName(node);
@@ -137,12 +136,12 @@ function complexity(filePath)
 				}
 
 				// 3b : MaxConditions
-				if (innerNode.type === "IfStatement") {
-					var tempMaxCon = 0;
+				if (innerNode.type === 'IfStatement') {
+					let tempMaxCon = 0;
 					traverseWithParents(innerNode, function (moreInnerNode) {
-						if (moreInnerNode.operator === "&&" || moreInnerNode.operator === "||") {
+						if (moreInnerNode.operator === '&&' || moreInnerNode.operator === '||') {
 							tempMaxCon += 1;
-						} else if (moreInnerNode.type === "IfStatement") {
+						} else if (moreInnerNode.type === 'IfStatement') {
 							tempMaxCon = 0;
 						}
 						if (tempMaxCon >= builder.MaxConditions) {
