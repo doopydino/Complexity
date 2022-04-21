@@ -152,8 +152,6 @@ function complexity(filePath)
 				}
 			});
 
-			// 5a : MaxNestingDepth
-
 			builders[builder.FunctionName] = builder;
 		}
 
